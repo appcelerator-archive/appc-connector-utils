@@ -1,0 +1,1 @@
+The folder contains contracts for the object structures used for schema and model.
