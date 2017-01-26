@@ -4,7 +4,7 @@
   "description": "Utilities for Arrow Connectors",
   "main": "lib/index.js",
   "scripts": {
-    "test": "npm test"
+    "test": "node ./test"
   },
   "repository": {
     "type": "git",
@@ -20,5 +20,17 @@
   "bugs": {
     "url": "https://github.com/appcelerator/appc-connector-utils/issues"
   },
-  "homepage": "https://github.com/appcelerator/appc-connector-utils#readme"
+  "homepage": "https://github.com/appcelerator/appc-connector-utils#readme",
+  "devDependencies": {
+    "lodash": "^4.17.4",
+    "swagger-client": "^2.1.32",
+    "tap-spec": "^4.1.1",
+    "tape": "^4.6.3",
+    "underscore.string": "^3.3.4"
+  },
+  "dependencies": {
+    "debug": "^2.6.0",    
+    "arrow": "^1.10.2",
+    "joi": "^10.2.0"
+  }
 }
