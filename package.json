@@ -1,0 +1,23 @@
+{
+  "name": "appc-connector-utils",
+  "version": "0.0.1",
+  "description": "Utilities for Arrow Connectors",
+  "scripts": {
+    "test": "npm test"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/appcelerator/appc-connector-utils.git"
+  },
+  "keywords": [
+    "arrow",
+    "connector",
+    "utilities"
+  ],
+  "author": "Axway R&D",
+  "license": "Apache-2.0",
+  "bugs": {
+    "url": "https://github.com/appcelerator/appc-connector-utils/issues"
+  },
+  "homepage": "https://github.com/appcelerator/appc-connector-utils#readme"
+}
