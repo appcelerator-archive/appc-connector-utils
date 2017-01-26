@@ -2,6 +2,7 @@
   "name": "appc-connector-utils",
   "version": "0.0.1",
   "description": "Utilities for Arrow Connectors",
+  "main": "lib/index.js",
   "scripts": {
     "test": "npm test"
   },
