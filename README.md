@@ -25,7 +25,7 @@ const api = require('appc-connector-utils')(connector);
 
 api.createSchema(yourTransformer, inputData);
 
-api.createModel(options);
+api.createModels(options);
 ```
 
 NOTE: The project is still not available in npm because is work in progress. Furthermore the API works in the context of specific connector.
