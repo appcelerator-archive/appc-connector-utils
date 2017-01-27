@@ -2,90 +2,85 @@ const _ = require('lodash');
 const _s = require('underscore.string');
 
 module.exports = function (connector, swaggerObject) {
-    //TODO Optimize!!!
-    return {
-        create: function () {
-            const schema = {}
-            // loop through the models and generate local equivalents
-            var models = swaggerObject.definitions;
-            for (var modelName in models) {
-                if (models.hasOwnProperty(modelName)) {
-                    var properties = models[modelName].properties;
-                    var required = models[modelName].required || [];
-                    var modelName = parseModelName(modelName);
-                    var model = {
+	const schema = {}
+	// loop through the models and generate local equivalents
+	var models = swaggerObject.definitions;
+	for (var modelName in models) {
+		if (models.hasOwnProperty(modelName)) {
+			var properties = models[modelName].properties;
+			var required = models[modelName].required || [];
+			var modelName = parseModelName(modelName);
+			var model = {
+				label: modelName,
+				methods: [],
+				fields: {}
+			}
+			// Grab the fields, translate the type from Swagger type to JS type
+			_.forOwn(properties, function (value, key) {
+				if ('id' !== key) {  // skip 'id' because Arrow will assume it?
+					model.fields[key] = {
+						type: translateType(value),
+						required: required.indexOf(key) !== -1
+					};
+				}
+			});
+			schema[modelName] = model;
+		}
+	}
+
+	// Try to find API endpoints that correspond to the models.
+	var paths = swaggerObject.paths;
+	var baseURL = `${(swaggerObject.schemes && swaggerObject.schemes[0]) || 'https'}://${swaggerObject.host}`;
+
+	if (swaggerObject.basePath) {
+		baseURL += swaggerObject.basePath;
+	}
+	for (var path in paths) {
+		if (paths.hasOwnProperty(path)) {
+			var url = baseURL + path;
+			// FIXME The model name may not be in the path, we should look at params to tell
+			var modelName = parseModelName(path);
+			var globalParams = {};
+			if (paths[path].parameters) {
+				globalParams = paths[path].parameters;
+			}
+			_.forOwn(paths[path], function (op, method) {
+				if ('parameters' === method) {
+					return;
+				}
+				var methodName = op.operationId || parseMethodName(connector.config, method, path);
+
+				//Is this sync???
+				var model = _.find(schema, function (value, key) {
+					return key.toUpperCase() === modelName.toUpperCase();
+				});
+				if (!model) {
+					schema[modelName] = {
 						label: modelName,
-                        methods: [],
-                        fields: {}
-                    }
-                    // Grab the fields, translate the type from Swagger type to JS type
-                    _.forOwn(properties, function (value, key) {
-                        if ('id' !== key) {  // skip 'id' because Arrow will assume it?
-                            model.fields[key] = {
-                                type: translateType(value),
-                                required: required.indexOf(key) !== -1
-                            };
-                        }
-                    });
-                    schema[modelName] = model;
-                }
-            }
+						fields: {},
+						methods: []
+					}
+				}
+				//TODO make these in factories
+				var methodObj = {
+					// TODO: Need to implement method overriding (aka: same name, different signatures).
+					name: methodName,
+					params: translateParameters(_.defaults(op.parameters, globalParams)),
+					verb: method.toUpperCase(),
+					url: url,
+					path: path,
+					operation: {
+						operationId: op.operationId,
+						summary: op.summary,
+						description: op.description
+					}
+				};
+				schema[modelName].methods.push(methodObj);
+			});
+		}
+	}
 
-            // Try to find API endpoints that correspond to the models.
-            var paths = swaggerObject.paths;
-            var baseURL = `${(swaggerObject.schemes && swaggerObject.schemes[0]) || 'https'}://${swaggerObject.host}`;
-
-            if (swaggerObject.basePath) {
-                baseURL += swaggerObject.basePath;
-            }
-            for (var path in paths) {
-                if (paths.hasOwnProperty(path)) {
-                    var url = baseURL + path;
-                    // FIXME The model name may not be in the path, we should look at params to tell
-                    var modelName = parseModelName(path);
-                    var globalParams = {};
-                    if (paths[path].parameters) {
-                        globalParams = paths[path].parameters;
-                    }
-                    _.forOwn(paths[path], function (op, method) {
-                        if ('parameters' === method) {
-                            return;
-                        }
-                        var methodName = op.operationId || parseMethodName(connector.config, method, path);
-
-                        //Is this sync???
-                        var model = _.find(schema, function (value, key) {
-                            return key.toUpperCase() === modelName.toUpperCase();
-                        });
-                        if (!model) {
-                            schema[modelName] = {
-								label: modelName,
-                                fields: {},
-								methods: []                                
-                            }
-                        }
-						//TODO make these in factories
-                        var methodObj = {
-                            // TODO: Need to implement method overriding (aka: same name, different signatures).
-                            name: methodName,
-                            params: translateParameters(_.defaults(op.parameters, globalParams)),
-                            verb: method.toUpperCase(),
-                            url: url,
-                            path: path,
-                            operation: {
-                                operationId: op.operationId,
-                                summary: op.summary,
-                                description: op.description
-                            }
-                        };
-                        schema[modelName].methods.push(methodObj);
-                    });
-                }
-            }
-
-			return schema;
-        }
-    }
+	return schema;
 }
 
 

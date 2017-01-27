@@ -1,9 +1,9 @@
 const debug = require('debug')('acu-test-runner');
 const test = require('tape');
 const tapSpec = require('tap-spec');
-const connectorUtils = require('../lib');
+const connectorUtils = require('../index');
 const swaggerFacade = require('./example-swagger/facade');
-const swaggerSchemaFactory = require('./example-swagger/schema-factory');
+const swaggerTransformer = require('./example-swagger/transformer');
 const petstoreSwaggerURL = 'http://petstore.swagger.io/v2/swagger.json';
 const EventEmitter = require('events');
 const myEmitter = new EventEmitter();
@@ -19,10 +19,14 @@ var connector = {
 	name: 'test',
 	config: {
 		modelAutogen: true,
-		persistModels: false
+		persistModels: false,
+		persistSchema: false,
+		bindModelMethods: true
 	},
 	emit: myEmitter.emit
 }
+
+const utils = connectorUtils(connector);
 
 test('### STEP 1: Fetch third-party service data ###', function (t) {
 	console.log('### STEP 1: Fetch third-party service data ###');
@@ -36,30 +40,23 @@ test('### STEP 1: Fetch third-party service data ###', function (t) {
 
 test('### STEP 2: Write your schema factory and create schema out of it ###', function (t) {
 	console.log('### STEP 2: Write your schema factory and create schema out of it ###');
-	swaggerSchema = swaggerSchemaFactory({}, thirdPartyData).create();
+	swaggerSchema = utils.createSchema(swaggerTransformer, thirdPartyData);
+	utils.getConnector().schema = swaggerSchema;
 	t.ok(swaggerSchema, 'Schema created successfully');
 	t.end();
 })
 
-test('### STEP 3: Validate and save the schema ###', function (t) {
-	console.log('### STEP 3: Validate and save the schema ###');
-	connectorUtils.validateSchema(swaggerSchema);
-	//skip this until folder creation mechanism is introduced
-	//connectorUtils.saveSchemaSync('swaggerSchema.json', swaggerSchema);
-	t.end();
-
-})
-
-test('### STEP 4: Create models out of schema - METHOD 1 ###', function (t) {
-	console.log('### STEP 4: Create models out of schema - METHOD 1 ###');
-	const models = connectorUtils.createModels(swaggerSchema, {connector: connector, namespace: 'static'});
+test('### STEP 3: Create models out of schema - METHOD 1 ###', function (t) {
+	console.log('### STEP 3: Create models out of schema - METHOD 1 ###');
+	const models = utils.createModels({namespace: 'static'});
 	t.ok(models, 'Models created successfully');
 	t.end();
 })
 
-// test('### STEP 4: Create models out of schema - METHOD 2 ###', function (t) {
-// 	const models = connectorUtils.createAndLoadModelsFromFiles(swaggerSchema, {connector: connector, namespace: 'static'});
-// 	debug(models);
-// 	t.ok(models, 'Models created successfully');
-// 	t.end();	
-// })
+test('### STEP 3: Create models out of schema - METHOD 2 ###', function (t) {
+	// change current config to try another model loading strategy
+	utils.getConfiguration().persistModels = true;
+	const models = utils.createModelsAndLoadFromFS({namespace: 'static'});
+	t.ok(models, 'Models created successfully');
+	t.end();
+})
