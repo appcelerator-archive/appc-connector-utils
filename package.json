@@ -4,7 +4,14 @@
   "description": "Utilities for Arrow Connectors",
   "main": "index.js",
   "scripts": {
-    "test": "node ./test"
+    "test": "cross-env DEBUG=acu-test-runner node ./test",
+    "rc_precommit": "npm run lint",
+    "lint": "happiness --verbose | snazzy"
+  },
+  "happiness": {
+    "ignore": [
+      "**/node_modules/**"
+    ]
   },
   "repository": {
     "type": "git",
@@ -22,14 +29,21 @@
   },
   "homepage": "https://github.com/appcelerator/appc-connector-utils#readme",
   "devDependencies": {
+    "cross-env": "^3.1.4",
+    "grunt": "^1.0.1",
+    "grunt-appc-js": "^1.0.23",
+    "happiness": "^7.1.2",
     "lodash": "^4.17.4",
+    "semistandard": "^9.2.1",
+    "snazzy": "^6.0.0",
+    "standard": "^8.6.0",
     "swagger-client": "^2.1.32",
     "tap-spec": "^4.1.1",
     "tape": "^4.6.3",
     "underscore.string": "^3.3.4"
   },
   "dependencies": {
-    "debug": "^2.6.0",    
+    "debug": "^2.6.0",
     "arrow": "^1.10.2",
     "joi": "^10.2.0"
   }

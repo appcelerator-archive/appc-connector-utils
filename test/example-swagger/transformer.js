@@ -2,85 +2,96 @@ const _ = require('lodash');
 const _s = require('underscore.string');
 
 module.exports = function (connector, swaggerObject) {
-	const schema = {}
-	// loop through the models and generate local equivalents
-	var models = swaggerObject.definitions;
-	for (var modelName in models) {
-		if (models.hasOwnProperty(modelName)) {
-			var properties = models[modelName].properties;
-			var required = models[modelName].required || [];
-			var modelName = parseModelName(modelName);
-			var model = {
+	const schema = {};
+	const models = swaggerObject.definitions;
+	const paths = swaggerObject.paths;
+	const baseURL = getBaseURL(swaggerObject);
+
+	// PROCESS MODELS
+	Object.keys(models).forEach(function (modelName) {
+		const parsedModelName = parseModelName(modelName);
+		const modelData = models[modelName];
+		schema[parsedModelName] = modelFactory(parsedModelName, modelData);
+	});
+
+	// PROCESS PATHS
+	Object.keys(paths).forEach(function (path) {
+		// TODO: FIXME The model name may not be in the path, we should look at params to tell
+		const modelName = parseModelName(path);
+		const methods = paths[path];
+		var model = schema[modelName];
+		if (!model) {
+			model = schema[modelName] = {
 				label: modelName,
-				methods: [],
-				fields: {}
+				fields: {},
+				methods: []
 			}
-			// Grab the fields, translate the type from Swagger type to JS type
-			_.forOwn(properties, function (value, key) {
-				if ('id' !== key) {  // skip 'id' because Arrow will assume it?
-					model.fields[key] = {
-						type: translateType(value),
-						required: required.indexOf(key) !== -1
-					};
-				}
-			});
-			schema[modelName] = model;
+		};
+		Object.keys(methods).forEach(function (method) {
+			const methodProperties = methods[method];
+			if (!(method === 'parameters')) {
+				model.methods.push(getModelMethod(methodProperties, path, method, baseURL))
+			};
+		});
+	});
+
+	return schema;
+};
+
+function getModelMethod(methodProperties, path, method, baseURL) {
+	const methodName = methodProperties.operationId || parseMethodName(connector.config, method, path);
+	const globalParams = method.parameters || {};
+	return {
+		// TODO: Need to implement method overriding (aka: same name, different signatures).
+		name: methodName,
+		params: translateParameters(_.defaults(methodProperties.parameters, globalParams)),
+		verb: method.toUpperCase(),
+		url: baseURL + path,
+		path: path,
+		operation: {
+			operationId: methodProperties.operationId,
+			summary: methodProperties.summary,
+			description: methodProperties.description
 		}
+	};
+}
+
+function modelFactory(modelName, modelData) {
+	const model = {
+		label: modelName,
+		methods: [],
+		fields: {}
+	}
+	const properties = modelData.properties;
+	const requiredProperties = modelData.required || [];
+
+	properties && processProperties(properties);
+
+	return model;
+
+	function processProperties(properties) {
+		Object.keys(properties).forEach(function (propertyName) {
+			if ('id' !== propertyName) {
+				addModelField(propertyName)
+			}
+		});
 	}
 
-	// Try to find API endpoints that correspond to the models.
-	var paths = swaggerObject.paths;
-	var baseURL = `${(swaggerObject.schemes && swaggerObject.schemes[0]) || 'https'}://${swaggerObject.host}`;
+	function addModelField(propertyName) {
+		const property = properties[propertyName];
+		model.fields[propertyName] = {
+			type: translateType(property),
+			required: requiredProperties.indexOf(propertyName) !== -1
+		};
+	}
+}
 
+function getBaseURL(swaggerObject) {
+	var baseURL = `${(swaggerObject.schemes && swaggerObject.schemes[0]) || 'https'}://${swaggerObject.host}`;
 	if (swaggerObject.basePath) {
 		baseURL += swaggerObject.basePath;
 	}
-	for (var path in paths) {
-		if (paths.hasOwnProperty(path)) {
-			var url = baseURL + path;
-			// FIXME The model name may not be in the path, we should look at params to tell
-			var modelName = parseModelName(path);
-			var globalParams = {};
-			if (paths[path].parameters) {
-				globalParams = paths[path].parameters;
-			}
-			_.forOwn(paths[path], function (op, method) {
-				if ('parameters' === method) {
-					return;
-				}
-				var methodName = op.operationId || parseMethodName(connector.config, method, path);
-
-				//Is this sync???
-				var model = _.find(schema, function (value, key) {
-					return key.toUpperCase() === modelName.toUpperCase();
-				});
-				if (!model) {
-					schema[modelName] = {
-						label: modelName,
-						fields: {},
-						methods: []
-					}
-				}
-				//TODO make these in factories
-				var methodObj = {
-					// TODO: Need to implement method overriding (aka: same name, different signatures).
-					name: methodName,
-					params: translateParameters(_.defaults(op.parameters, globalParams)),
-					verb: method.toUpperCase(),
-					url: url,
-					path: path,
-					operation: {
-						operationId: op.operationId,
-						summary: op.summary,
-						description: op.description
-					}
-				};
-				schema[modelName].methods.push(methodObj);
-			});
-		}
-	}
-
-	return schema;
+	return baseURL;
 }
 
 

@@ -2,13 +2,19 @@
 
 Utilities for Arrow Connectors
 
-# Overview
+# Description
+
+## TL;DR
+
+Can be used by all connectors that need to implement GeneratesModels capability (a.k.a. dynamic discovery).
+
+## Overview
 
 Arrow Connectors transform data structures from third party services and databases into the data model used in Arrow. The utilities in this project strive to standartize the transformation in the scenarios that use dynamic service discovery.
 
 The project defines contract for the schema and the model that will guarantee the proper generation of models and endpoints by Arro framework. The contract is specified in the form of [Joi](https://github.com/hapijs/joi) object descriptions.
 
-# How to use it? 
+# How to use it?
 
 The project could be required as npm module or directly from github.
 
