@@ -2,6 +2,7 @@ const debug = require('debug')('acu-main');
 const schemaAPI = require('./lib/schema/api');
 const modelAPI = require('./lib/model/api');
 const testUtils = require('./lib/util/test');
+const commonUtils = require('./lib/util/common');
 
 module.exports = function (connector, options) {
 	debug('OBTAIN API');
@@ -21,7 +22,7 @@ module.exports = function (connector, options) {
 		getConfiguration: function () {
 			return connector.config;
 		}, 
-
-		testUtils: testUtils
+		common: commonUtils,
+		test: testUtils
 	};
 };

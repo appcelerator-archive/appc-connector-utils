@@ -22,8 +22,7 @@ var connector = {
 	config: {
 		modelAutogen: true,
 		persistModels: false,
-		persistSchema: false,
-		bindModelMethods: true
+		persistSchema: false
 	},
 	emit: myEmitter.emit
 };
@@ -56,14 +55,7 @@ test('### Create models out of schema provided with options (override the one in
 
 test('### Create models out of schema attached to connector - METHOD 2 ###', function (t) {
 	debug('### STEP 3 / METHOD 2: Create models out of schema attached to connector ###');
-	utils.getConnector().schema = swaggerSchema;
-	const models = utils.createModels();
-	t.ok(models, 'Models created successfully');
-	t.end();
-});
-
-test('### Create models out of schema attached to connector - METHOD 2 ###', function (t) {
-	debug('### STEP 3 / METHOD 3: Create models out of schema attached to connector ###');
+	const swaggerSchema = utils.createSchema(swaggerTransformer, thirdPartyData);	
 	utils.getConnector().schema = swaggerSchema;
 	const models = utils.createModels();
 	t.ok(models, 'Models created successfully');
