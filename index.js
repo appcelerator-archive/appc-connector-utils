@@ -9,8 +9,8 @@ module.exports = function (connector, options) {
 	debug('OBTAIN API');
 	return {
 		createModels: function (modelDescriptions, options) {
-			const options = options || [];
-			const models = modelAPI.createFromDescription(modelDescriptions, options);
+			options = options || [];
+			const models = modelAPI.createFromDescription(connector, modelDescriptions, options);
 			if (!options.delayModelsAttachment) {
 				connector.models = models;
 			}
@@ -24,7 +24,7 @@ module.exports = function (connector, options) {
 				return schemaAPI.createSchema(connector, transformer, data);
 			},
 			createModelsFromSchema: function (options) {
-				const options = options || [];
+				options = options || [];
 				const models = modelAPI.createModels(connector, options || {});
 				if (!options.delayModelsAttachment) {
 					connector.models = models;
@@ -44,7 +44,7 @@ module.exports = function (connector, options) {
 		test: testUtils,
 		// TODO Reconsider this one where to put it ???
 		createModelsAndLoadFromFS: function (options) {
-			const options = options || [];
+			options = options || [];
 			const models = modelAPI.createModelsAndLoadFromFS(connector, options);
 			if (!options.delayModelsAttachment) {
 				connector.models = models;
