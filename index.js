@@ -9,17 +9,27 @@ module.exports = function (connector, options) {
 	debug('OBTAIN API');
 	return {
 		createModels: function (modelDescriptions, options) {
-			modelAPI.createFromDescription(modelDescriptions, options);
-		},		
+			const options = options || [];
+			const models = modelAPI.createFromDescription(modelDescriptions, options);
+			if (!options.delayModelsAttachment) {
+				connector.models = models;
+			}
+			return models;
+		},
 		createEndpoints: function (endpointDescriptions) {
-			endpointAPI.createEndpoints(endpointDescriptions);
-		},		
+			return endpointAPI.createEndpoints(endpointDescriptions);
+		},
 		processWithSchema: {
 			createSchema: function (transformer, data) {
 				return schemaAPI.createSchema(connector, transformer, data);
 			},
 			createModelsFromSchema: function (options) {
-				return modelAPI.createModels(connector, options || {});
+				const options = options || [];
+				const models = modelAPI.createModels(connector, options || {});
+				if (!options.delayModelsAttachment) {
+					connector.models = models;
+				}
+				return models;
 			}
 		},
 		metadata: {
@@ -34,7 +44,12 @@ module.exports = function (connector, options) {
 		test: testUtils,
 		// TODO Reconsider this one where to put it ???
 		createModelsAndLoadFromFS: function (options) {
-			return modelAPI.createModelsAndLoadFromFS(connector, options);
+			const options = options || [];
+			const models = modelAPI.createModelsAndLoadFromFS(connector, options);
+			if (!options.delayModelsAttachment) {
+				connector.models = models;
+			}
+			return models;
 		}		
 	};
 };
