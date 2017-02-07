@@ -2,11 +2,29 @@
 
 Utilities for Arrow Connectors
 
+"Develop connectors without the needs to know Arrow Ecosystem"
+"Just write data transformer from Third-Party API to Schema Contract"
+
 # Description
 
 ## TL;DR
 
 Can be used by all connectors that need to implement GeneratesModels capability (a.k.a. dynamic discovery).
+
+Guarantees you that Arrow just works 
+
+* It will isolate the connectors from changes in Arrow/ORM
+
+* Any change in the platform will be fixed here to ansure that connectors are working!!!
+
+Different utils depends on Arrow or ORM or Connector 
+
+* must be decided ... it will be compatible with certain Arrow/ORM versions.
+
+* some overalppings with arrow-orm and arrow-objectmodel
+
+Basically the JOI contracts should follow the docs about Model / API etc.
+
 
 ## Overview
 

@@ -19,11 +19,11 @@ module.exports = function (connector, options) {
 		createEndpoints: function (endpointDescriptions) {
 			return endpointAPI.createEndpoints(endpointDescriptions);
 		},
-		processWithSchema: {
+		createModelsViaSchema: {
 			createSchema: function (transformer, data) {
 				return schemaAPI.createSchema(connector, transformer, data);
 			},
-			createModelsFromSchema: function (options) {
+			createModels: function (options) {
 				options = options || [];
 				const models = modelAPI.createModels(connector, options || {});
 				if (!options.delayModelsAttachment) {
