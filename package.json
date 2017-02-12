@@ -5,7 +5,12 @@
   "main": "index.js",
   "scripts": {
     "test-suite": "cross-env DEBUG=acu-test-runner node ./test",
-    "test": "npm run test-suite"
+    "test": "npm run test-suite",
+	"start-server": "node test/server/demonize start",
+	"stop-server": "node test/server/demonize stop",
+	"pretest": "npm run start-server",
+	"posttest": "npm run stop-server"
+	
   },
   "happiness": {
     "ignore": [
