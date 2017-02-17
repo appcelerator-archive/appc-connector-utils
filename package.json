@@ -6,11 +6,9 @@
   "scripts": {
     "test-suite": "cross-env DEBUG=acu-test-runner node ./test",
     "test": "npm run test-suite",
-	"start-server": "node test/server/demonize start",
-	"stop-server": "node test/server/demonize stop",
-	"pretest": "npm run start-server",
-	"posttest": "npm run stop-server"
-	
+    "lint": "standard | snazzy",
+    "lint-fix": "standard --fix | snazzy",
+    "precommit": "npm run lint-fix"
   },
   "happiness": {
     "ignore": [
@@ -36,8 +34,10 @@
     "cross-env": "^3.1.4",
     "daemonize2": "^0.4.2",
     "happiness": "^7.1.2",
+    "husky": "^0.13.1",
     "lodash": "^4.17.4",
     "snazzy": "^6.0.0",
+    "standard": "^8.6.0",
     "swagger-client": "^2.1.32",
     "tap-spec": "^4.1.1",
     "tape": "^4.6.3",
