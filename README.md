@@ -12,11 +12,11 @@ The project defines object schemas for metadata needed to create Arrow Models. P
 
 # How to use it?
 
-1. Install the module
+Install the module
 
 > npm i appc-connector-utils
 
-2. Require it in your project passing the connector and options as context
+Require it in your project passing the connector and options as context
 
 ```javascript
 const utils = require('appc-connector-utils')(connector, options)
