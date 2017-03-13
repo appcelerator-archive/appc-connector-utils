@@ -1,19 +1,16 @@
 {
   "name": "appc-connector-utils",
-  "version": "0.0.4",
+  "version": "0.0.5",
   "description": "Utilities for Arrow Connectors",
-  "main": "index.js",
+  "main": "./lib/index.js",
   "scripts": {
-    "test-suite": "cross-env DEBUG=acu-test-runner node ./test",
-    "test": "npm run test-suite",
+    "test": "npm run lint-fix && npm run test:all",
+    "test:all": "tap test/unit/*.js test/integration/*.js --color --bail --cov",
+    "test:unit": "tap test/unit/*.js --color --bail --cov",
+    "test:integration": "tap test/integration/*.js --color --bail --cov",
     "lint": "standard | snazzy",
     "lint-fix": "standard --fix | snazzy",
-    "precommit": "npm run lint-fix"
-  },
-  "happiness": {
-    "ignore": [
-      "**/node_modules/**"
-    ]
+    "precommit": "npm run lint"
   },
   "repository": {
     "type": "git",
@@ -30,22 +27,25 @@
     "url": "https://github.com/appcelerator/appc-connector-utils/issues"
   },
   "homepage": "https://github.com/appcelerator/appc-connector-utils#readme",
-  "devDependencies": {
-    "cross-env": "^3.1.4",
-    "daemonize2": "^0.4.2",
-    "happiness": "^7.1.2",
-    "husky": "^0.13.1",
-    "lodash": "^4.17.4",
-    "snazzy": "^6.0.0",
-    "standard": "^8.6.0",
-    "swagger-client": "^2.1.32",
-    "tap-spec": "^4.1.1",
-    "tape": "^4.6.3",
-    "underscore.string": "^3.3.4"
-  },
   "dependencies": {
-    "debug": "^2.6.0",
     "arrow": "^1.10.2",
     "joi": "^10.2.0"
+  },
+  "devDependencies": {
+    "husky": "^0.13.1",
+    "snazzy": "^6.0.0",
+    "standard": "^8.6.0",
+    "tap": "^10.1.0"
+  },
+  "standard": {
+    "ignore": [
+      ".nyc_output",
+      ".vscode",
+      "coverage",
+      "node_modules"
+    ]
+  },
+  "engines": {
+    "node": ">=6.10.0"
   }
 }

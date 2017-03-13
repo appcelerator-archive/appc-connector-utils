@@ -1,0 +1,35 @@
+{
+  "GoodMetadata": {
+    "name": "Airlines",
+    "autogen": true,
+    "generated": true,
+    "connector": {
+      "name": "appc.test"
+    },
+    "fields": {
+      "Name": {
+        "type": "string",
+        "required": false
+      }
+    },
+    "metadata": {
+      "primarykey": "AirlineCode"
+    }
+  },
+  "BadMetadata": {
+    "autogen": true,
+    "generated": true,    
+    "connector": {
+      "name": "appc.test"
+    },
+    "fields": {
+      "Name": {
+        "type": "string",
+        "required": false
+      }
+    },
+    "metadata": {
+      "primarykey": "AirlineCode"
+    }
+  }
+}

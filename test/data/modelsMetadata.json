@@ -1,0 +1,77 @@
+{
+  "People": {
+    "name": "People",
+    "fields": {
+      "FirstName": {
+        "type": "string",
+        "required": true
+      },
+      "LastName": {
+        "type": "string",
+        "required": false
+      },
+      "MiddleName": {
+        "type": "string",
+        "required": false
+      },
+      "Gender": {
+        "type": "string",
+        "required": true
+      },
+      "Age": {
+        "type": "number",
+        "required": false
+      },
+      "Emails": {
+        "type": "array",
+        "required": false
+      },
+      "AddressInfo": {
+        "type": "array",
+        "required": false
+      },
+      "HomeAddress": {
+        "type": "object",
+        "required": false
+      },
+      "FavoriteFeature": {
+        "type": "string",
+        "required": true
+      },
+      "Features": {
+        "type": "array",
+        "required": true
+      },
+      "Friends": {
+        "type": "array",
+        "required": false,
+        "model": "Person"
+      },
+      "BestFriend": {
+        "type": "string",
+        "required": false,
+        "model": "Person"
+      },
+      "Trips": {
+        "type": "array",
+        "required": false,
+        "model": "Trip"
+      }
+    },
+    "metadata": {
+      "primarykey": "UserName"
+    }
+  },
+  "Airlines": {
+    "name": "Airlines",
+    "fields": {
+      "Name": {
+        "type": "string",
+        "required": false
+      }
+    },
+    "metadata": {
+      "primarykey": "AirlineCode"
+    }
+  }
+}
