@@ -19,7 +19,7 @@ The project defines object schemas for metadata needed to create Arrow Models. P
 2. Require it in your project passing the connector and options as context
 
 ```javascript
-const utils = require(appc-connector-utils)(connector, options)
+const utils = require('appc-connector-utils')(connector, options)
 ```
 
 # How to run the test suite?
