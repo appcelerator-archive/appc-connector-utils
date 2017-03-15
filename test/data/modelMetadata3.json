@@ -1,0 +1,13 @@
+{
+  "Airlines": {
+    "fields": {
+      "Name": {
+        "type": "string",
+        "required": false
+      }
+    },
+    "metadata": {
+      "primarykey": "AirlineCode"
+    }
+  }
+}
