@@ -3,11 +3,12 @@ const modelMetadata1 = require('../data/modelMetadata1')
 const modelMetadata2 = require('../data/modelMetadata2')
 const arrowConfig = require('../conf/arrow')
 const connectorConfig = require('../conf/connector')
-const utils = require('../../lib/utils/arrow')
-const arrow = utils.createArrowWithConnector({arrowConfig, connectorConfig})
+const arrowUtils = require('../../lib/utils/arrow')
+const arrow = arrowUtils.createArrowWithConnector({arrowConfig, connectorConfig})
 const server = arrow.server
 const connector = arrow.connector
-const library = require('../../lib')(connector, {})
+const library = require('../../lib')
+const utils = library.initUtils(connector, {})
 
 test('server, connector, and library', function (t) {
   t.ok(server)
@@ -18,7 +19,7 @@ test('server, connector, and library', function (t) {
 
 test('createModels', function (t) {
   t.notOk(connector.models)
-  const models = library.createModels(modelMetadata2)
+  const models = utils.createModels(modelMetadata2)
   t.same(models, connector.models)
   t.equal(Object.keys(models).length, 2)
   t.ok(models['People'])
@@ -29,7 +30,7 @@ test('createModels', function (t) {
 
 test('createModels delayed attachment', function (t) {
   t.notOk(connector.models)
-  const models = library.createModels(modelMetadata2, {delayModelsAttachment: true})
+  const models = utils.createModels(modelMetadata2, {delayModelsAttachment: true})
   t.notOk(connector.models)
   t.equal(Object.keys(models).length, 2)
   t.ok(models['People'])
@@ -38,17 +39,17 @@ test('createModels delayed attachment', function (t) {
 })
 
 test('createModels - missing metadata', function (t) {
-  t.throws(library.createModels)
+  t.throws(utils.createModels)
   t.end()
 })
 
 test('getConnector', function (t) {
-  t.same(connector, library.getConnector())
+  t.same(connector, utils.getConnector())
   t.end()
 })
 
 test('getConnectorConfig', function (t) {
-  t.ok(library.getConnectorConfig())
+  t.ok(utils.getConnectorConfig())
   t.end()
 })
 
