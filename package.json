@@ -10,7 +10,8 @@
     "test:integration": "tap test/integration/*.js --color --bail --cov",
     "lint": "standard | snazzy",
     "lint-fix": "standard --fix | snazzy",
-    "precommit": "npm run lint"
+    "precommit": "npm run lint",
+    "s": "tap test/index.js"
   },
   "repository": {
     "type": "git",
@@ -28,14 +29,14 @@
   },
   "homepage": "https://github.com/appcelerator/appc-connector-utils#readme",
   "dependencies": {
-    "arrow": "^1.10.2",
     "joi": "^10.2.0"
   },
   "devDependencies": {
     "husky": "^0.13.1",
     "snazzy": "^6.0.0",
     "standard": "^8.6.0",
-    "tap": "^10.1.0"
+    "tap": "^10.1.0",
+    "arrow": "*"    
   },
   "standard": {
     "ignore": [

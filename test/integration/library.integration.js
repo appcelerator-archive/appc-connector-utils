@@ -1,14 +1,22 @@
+const Arrow = require('arrow')
 const test = require('tap').test
 const modelMetadata1 = require('../data/modelMetadata1')
 const modelMetadata2 = require('../data/modelMetadata2')
 const arrowConfig = require('../conf/arrow')
 const connectorConfig = require('../conf/connector')
-const arrowUtils = require('../../lib/utils/arrow')
-const arrow = arrowUtils.createArrowWithConnector({arrowConfig, connectorConfig})
-const server = arrow.server
-const connector = arrow.connector
-const library = require('../../lib')
-const utils = library.initUtils(connector, {})
+
+const server = new Arrow(arrowConfig, true)
+const DEFAULT_CONNECTOR_NAME = 'appc.test'
+const DEFAULT_CONNECTOR_METADATA = {
+  name: DEFAULT_CONNECTOR_NAME,
+  connect: function () { },
+  create: function (Model, value, callback) { }
+}
+const Connector = Arrow.Connector.extend(DEFAULT_CONNECTOR_METADATA)
+const connector = new Connector(connectorConfig)
+
+// const library = require('../../lib')(Arrow, DEFAULT_CONNECTOR_NAME)
+const library = require('../../lib')(Arrow, connector)
 
 test('server, connector, and library', function (t) {
   t.ok(server)
@@ -19,7 +27,7 @@ test('server, connector, and library', function (t) {
 
 test('createModels', function (t) {
   t.notOk(connector.models)
-  const models = utils.createModels(modelMetadata2)
+  const models = library.createModels(modelMetadata2)
   t.same(models, connector.models)
   t.equal(Object.keys(models).length, 2)
   t.ok(models['People'])
@@ -30,7 +38,7 @@ test('createModels', function (t) {
 
 test('createModels delayed attachment', function (t) {
   t.notOk(connector.models)
-  const models = utils.createModels(modelMetadata2, {delayModelsAttachment: true})
+  const models = library.createModels(modelMetadata2, {delayModelsAttachment: true})
   t.notOk(connector.models)
   t.equal(Object.keys(models).length, 2)
   t.ok(models['People'])
@@ -39,17 +47,17 @@ test('createModels delayed attachment', function (t) {
 })
 
 test('createModels - missing metadata', function (t) {
-  t.throws(utils.createModels)
+  t.throws(library.createModels)
   t.end()
 })
 
 test('getConnector', function (t) {
-  t.same(connector, utils.getConnector())
+  t.same(connector, library.getConnector())
   t.end()
 })
 
 test('getConnectorConfig', function (t) {
-  t.ok(utils.getConnectorConfig())
+  t.ok(library.getConnectorConfig())
   t.end()
 })
 
