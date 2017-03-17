@@ -3,31 +3,24 @@ const test = require('tap').test
 const modelMetadata2 = require('../data/modelMetadata2')
 const modelMetadata3 = require('../data/modelMetadata3')
 const arrowConfig = require('../conf/arrow')
-const connectorConfig = require('../conf/connector')
-
-const arrow = new Arrow(arrowConfig, true)
-console.log(arrow)
-const DEFAULT_CONNECTOR_NAME = 'appc.test'
-const DEFAULT_CONNECTOR_METADATA = {
-  name: DEFAULT_CONNECTOR_NAME,
-  connect: function () { },
-  create: function (Model, value, callback) { }
-}
-const Connector = Arrow.Connector.extend(DEFAULT_CONNECTOR_METADATA)
-const connector = new Connector(connectorConfig)
-
-// const connector = arrow.getConnector('appc.test')
-// const arrow = utils.createArrowWithConnector({arrowConfig, connectorConfig})
-// const connector = arrow.connector
+const container = new Arrow(arrowConfig, true)
+const connectorFactory = require('../utils/connectorFactory')
+const connector = connectorFactory()
 
 const modelApi = require('../../lib/model/api')(Arrow)
 
-test('createFromMetadata - missing mandatory parameters', function (t) {
+test('environment', t => {
+  t.ok(container)
+  t.ok(connector)
+  t.end()
+})
+
+test('createFromMetadata - missing mandatory parameters', t => {
   t.throws(modelApi.createFromMetadata)
   t.end()
 })
 
-test('createFromMetadata - missing connector', function (t) {
+test('createFromMetadata - missing connector', t => {
   t.throws(createFromMetadata)
   t.end()
 
@@ -36,7 +29,7 @@ test('createFromMetadata - missing connector', function (t) {
   }
 })
 
-test('createFromMetadata - missing metadata', function (t) {
+test('createFromMetadata - missing metadata', t => {
   t.throws(createFromMetadata)
   t.end()
 
@@ -45,7 +38,7 @@ test('createFromMetadata - missing metadata', function (t) {
   }
 })
 
-test('createFromMetadata', function (t) {
+test('createFromMetadata', t => {
   const models = modelApi.createFromMetadata(connector, modelMetadata2)
   t.equal(Object.keys(models).length, 2)
   t.ok(models['People'])
@@ -53,7 +46,7 @@ test('createFromMetadata', function (t) {
   t.end()
 })
 
-test('createFromMetadata - check extra fields are set', function (t) {
+test('createFromMetadata - check extra fields are set', t => {
   const models = modelApi.createFromMetadata(connector, modelMetadata3)
   t.equal(Object.keys(models).length, 1)
   const createdModel = models['Airlines']
@@ -71,7 +64,7 @@ test('createFromMetadata - check extra fields are set', function (t) {
   t.end()
 })
 
-test('getParentModelName', function (t) {
+test('getParentModelName', t => {
   const name1 = 'appc.test/myModel1'
   const name2 = 'myModel2'
   const name3 = 'myModel3'

@@ -3,29 +3,19 @@ const test = require('tap').test
 const modelMetadata1 = require('../data/modelMetadata1')
 const modelMetadata2 = require('../data/modelMetadata2')
 const arrowConfig = require('../conf/arrow')
-const connectorConfig = require('../conf/connector')
-
-const server = new Arrow(arrowConfig, true)
-const DEFAULT_CONNECTOR_NAME = 'appc.test'
-const DEFAULT_CONNECTOR_METADATA = {
-  name: DEFAULT_CONNECTOR_NAME,
-  connect: function () { },
-  create: function (Model, value, callback) { }
-}
-const Connector = Arrow.Connector.extend(DEFAULT_CONNECTOR_METADATA)
-const connector = new Connector(connectorConfig)
-
-// const library = require('../../lib')(Arrow, DEFAULT_CONNECTOR_NAME)
+const container = new Arrow(arrowConfig, true)
+const connectorFactory = require('../utils/connectorFactory')
+const connector = connectorFactory()
 const library = require('../../lib')(Arrow, connector)
 
-test('server, connector, and library', function (t) {
-  t.ok(server)
+test('server, connector, and library', t => {
+  t.ok(container)
   t.ok(connector)
   t.ok(library)
   t.end()
 })
 
-test('createModels', function (t) {
+test('createModels', t => {
   t.notOk(connector.models)
   const models = library.createModels(modelMetadata2)
   t.same(models, connector.models)
@@ -36,7 +26,7 @@ test('createModels', function (t) {
   t.end()
 })
 
-test('createModels delayed attachment', function (t) {
+test('createModels delayed attachment', t => {
   t.notOk(connector.models)
   const models = library.createModels(modelMetadata2, {delayModelsAttachment: true})
   t.notOk(connector.models)
@@ -46,35 +36,35 @@ test('createModels delayed attachment', function (t) {
   t.end()
 })
 
-test('createModels - missing metadata', function (t) {
+test('createModels - missing metadata', t => {
   t.throws(library.createModels)
   t.end()
 })
 
-test('getConnector', function (t) {
+test('getConnector', t => {
   t.same(connector, library.getConnector())
   t.end()
 })
 
-test('getConnectorConfig', function (t) {
+test('getConnectorConfig', t => {
   t.ok(library.getConnectorConfig())
   t.end()
 })
 
-test('validateModelMetadata - ok', function (t) {
+test('validateModelMetadata - ok', t => {
   const metadata = modelMetadata1['GoodMetadata']
   const result = library.validateModelMetadata(metadata)
   t.same(result.value, metadata)
   t.end()
 })
 
-test('validateModelMetadata - missing metadata', function (t) {
+test('validateModelMetadata - missing metadata', t => {
   const result = library.validateModelMetadata()
   t.notOk(result)
   t.end()
 })
 
-test('getParentModelName', function (t) {
+test('getParentModelName', t => {
   const name1 = 'appc.test/myModel1'
   const name2 = 'myModel2'
   const name3 = 'myModel3'

@@ -10,8 +10,7 @@
     "test:integration": "tap test/integration/*.js --color --bail --cov",
     "lint": "standard | snazzy",
     "lint-fix": "standard --fix | snazzy",
-    "precommit": "npm run lint",
-    "s": "tap test/index.js"
+    "precommit": "npm run lint"
   },
   "repository": {
     "type": "git",
@@ -32,11 +31,12 @@
     "joi": "^10.2.0"
   },
   "devDependencies": {
+    "arrow": "*",
     "husky": "^0.13.1",
+    "request": "^2.81.0",
     "snazzy": "^6.0.0",
     "standard": "^8.6.0",
-    "tap": "^10.1.0",
-    "arrow": "*"    
+    "tap": "^10.3.0"
   },
   "standard": {
     "ignore": [
