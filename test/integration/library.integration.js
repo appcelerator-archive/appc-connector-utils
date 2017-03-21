@@ -2,6 +2,7 @@ const Arrow = require('arrow')
 const test = require('tap').test
 const modelMetadata1 = require('../data/modelMetadata1')
 const modelMetadata2 = require('../data/modelMetadata2')
+const callsMetadata = require('../data/callsMetadata')
 const arrowConfig = require('../conf/arrow')
 const container = new Arrow(arrowConfig, true)
 const connectorFactory = require('../utils/connectorFactory')
@@ -19,9 +20,10 @@ test('createModels', t => {
   t.notOk(connector.models)
   const models = library.createModels(modelMetadata2)
   t.same(models, connector.models)
-  t.equal(Object.keys(models).length, 2)
+  t.equal(Object.keys(models).length, 3)
   t.ok(models['People'])
   t.ok(models['Airlines'])
+  t.ok(models['Call'])
   connector.models = null
   t.end()
 })
@@ -30,9 +32,10 @@ test('createModels delayed attachment', t => {
   t.notOk(connector.models)
   const models = library.createModels(modelMetadata2, {delayModelsAttachment: true})
   t.notOk(connector.models)
-  t.equal(Object.keys(models).length, 2)
+  t.equal(Object.keys(models).length, 3)
   t.ok(models['People'])
   t.ok(models['Airlines'])
+  t.ok(models['Call'])
   t.end()
 })
 
@@ -64,7 +67,7 @@ test('validateModelMetadata - missing metadata', t => {
   t.end()
 })
 
-test('getParentModelName', t => {
+test('getRootModelName', t => {
   const name1 = 'appc.test/myModel1'
   const name2 = 'myModel2'
   const name3 = 'myModel3'
@@ -78,27 +81,52 @@ test('getParentModelName', t => {
   const modelWithParentNoName = {name: name5, _parent: {}}
   const wrongModel = {}
 
-  const name1Result = library.getParentModelName(modelWithNamespace)
+  const name1Result = library.getRootModelName(modelWithNamespace)
   t.equal(name1Result.nameOnly, 'myModel1')
   t.equal(name1Result.withNamespace, name1)
 
-  const name2Result = library.getParentModelName(modelWithoutNamespace)
+  const name2Result = library.getRootModelName(modelWithoutNamespace)
   t.equal(name2Result.nameOnly, name2)
   t.equal(name2Result.withNamespace, name2)
 
-  const name3Result = library.getParentModelName(modelWithParent)
+  const name3Result = library.getRootModelName(modelWithParent)
   t.equal(name3Result.nameOnly, name3)
   t.equal(name3Result.withNamespace, name3)
 
-  const name4Result = library.getParentModelName(modelWithParentNamespaced)
+  const name4Result = library.getRootModelName(modelWithParentNamespaced)
   t.equal(name4Result.nameOnly, 'myModel4')
   t.equal(name4Result.withNamespace, name4)
 
-  const name5Result = library.getParentModelName(modelWithParentNoName)
+  const name5Result = library.getRootModelName(modelWithParentNoName)
   t.equal(name5Result.nameOnly, 'myModel5')
   t.equal(name5Result.withNamespace, name5)
 
-  t.throws(library.getParentModelName.bind(null, wrongModel))
+  t.throws(library.getRootModelName.bind(null, wrongModel))
 
+  t.end()
+})
+
+test('createInstanceFromModel', t => {
+  // Simulate model creation and get it
+  library.createModels(modelMetadata2)
+  const model = connector.models.Call
+
+  // Use it to create instance from this Model
+  var result = library.createInstanceFromModel(model, callsMetadata[0], 'sid')
+  t.ok(result)
+  t.equal(typeof result, 'object')
+  t.end()
+})
+
+test('createCollectionFromModel', t => {
+  // Simulate model creation and get it
+  library.createModels(modelMetadata2)
+  const model = connector.models.Call
+
+  // Use it to create collection from this Model
+  const result = library.createCollectionFromModel(model, callsMetadata, 'sid')
+  t.ok(result)
+  t.ok(result instanceof Array)
+  t.ok(result.length === 3)
   t.end()
 })
