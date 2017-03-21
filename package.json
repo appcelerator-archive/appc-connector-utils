@@ -31,7 +31,8 @@
   },
   "homepage": "https://github.com/appcelerator/appc-connector-utils#readme",
   "dependencies": {
-    "joi": "^10.2.0"
+    "joi": "^10.2.0",
+    "pluralize": "^4.0.0"
   },
   "devDependencies": {
     "arrow": "*",

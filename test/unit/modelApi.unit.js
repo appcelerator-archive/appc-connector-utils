@@ -81,22 +81,27 @@ test('getRootModelName', t => {
 
   const name1Result = modelApi.getRootModelName(modelWithNamespace)
   t.equal(name1Result.nameOnly, 'myModel1')
+  t.equal(name1Result.nameOnlyPlural, 'myModel1S')
   t.equal(name1Result.withNamespace, name1)
 
   const name2Result = modelApi.getRootModelName(modelWithoutNamespace)
   t.equal(name2Result.nameOnly, name2)
+  t.equal(name2Result.nameOnlyPlural, name2 + 'S')
   t.equal(name2Result.withNamespace, name2)
 
   const name3Result = modelApi.getRootModelName(modelWithParent)
   t.equal(name3Result.nameOnly, name3)
+  t.equal(name3Result.nameOnlyPlural, name3 + 'S')
   t.equal(name3Result.withNamespace, name3)
 
   const name4Result = modelApi.getRootModelName(modelWithParentNamespaced)
   t.equal(name4Result.nameOnly, 'myModel4')
+  t.equal(name4Result.nameOnlyPlural, 'myModel4S')
   t.equal(name4Result.withNamespace, name4)
 
   const name5Result = modelApi.getRootModelName(modelWithParentNoName)
   t.equal(name5Result.nameOnly, 'myModel5')
+  t.equal(name5Result.nameOnlyPlural, 'myModel5S')
   t.equal(name5Result.withNamespace, name5)
 
   t.throws(modelApi.getRootModelName.bind(null, wrongModel))
