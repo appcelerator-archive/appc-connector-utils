@@ -21,9 +21,9 @@ test('createModels', t => {
   const models = library.createModels(modelMetadata2)
   t.same(models, connector.models)
   t.equal(Object.keys(models).length, 3)
-  t.ok(models['People'])
-  t.ok(models['Airlines'])
-  t.ok(models['Call'])
+  t.ok(models['appc.test/People'])
+  t.ok(models['appc.test/Airlines'])
+  t.ok(models['appc.test/Call'])
   connector.models = null
   t.end()
 })
@@ -33,9 +33,9 @@ test('createModels delayed attachment', t => {
   const models = library.createModels(modelMetadata2, {delayModelsAttachment: true})
   t.notOk(connector.models)
   t.equal(Object.keys(models).length, 3)
-  t.ok(models['People'])
-  t.ok(models['Airlines'])
-  t.ok(models['Call'])
+  t.ok(models['appc.test/People'])
+  t.ok(models['appc.test/Airlines'])
+  t.ok(models['appc.test/Call'])
   t.end()
 })
 
@@ -109,7 +109,7 @@ test('getRootModelName', t => {
 test('createInstanceFromModel', t => {
   // Simulate model creation and get it
   library.createModels(modelMetadata2)
-  const model = connector.models.Call
+  const model = connector.models['appc.test/Call']
 
   // Use it to create instance from this Model
   var result = library.createInstanceFromModel(model, callsMetadata[0], 'sid')
@@ -121,7 +121,7 @@ test('createInstanceFromModel', t => {
 test('createCollectionFromModel', t => {
   // Simulate model creation and get it
   library.createModels(modelMetadata2)
-  const model = connector.models.Call
+  const model = connector.models['appc.test/Call']
 
   // Use it to create collection from this Model
   const result = library.createCollectionFromModel(model, callsMetadata, 'sid')
