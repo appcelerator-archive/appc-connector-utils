@@ -48,6 +48,27 @@ test('createFromMetadata', t => {
 })
 
 test('createFromMetadata - check extra fields are set', t => {
+  connector.config.skipModelNamespace = true
+  const models = modelApi.createFromMetadata(connector, modelMetadata3)
+  t.equal(Object.keys(models).length, 1)
+  const createdModel = models['Airlines']
+  t.ok(createdModel)
+  t.ok(createdModel.actions)
+  t.ok(createdModel.autogen)
+  t.same(createdModel.connector, connector)
+  t.ok(createdModel.disabledActions)
+  t.ok(createdModel.fields.Name)
+  t.ok(createdModel.generated)
+  t.ok(createdModel.metadata.primarykey)
+  t.equal(createdModel.name, 'Airlines')
+  t.ok(createdModel.plural)
+  t.ok(createdModel.singular)
+  connector.config.skipModelNamespace = false
+  t.end()
+})
+
+test('model namespace', t => {
+  connector.config.modelNamespace = 'appc.test'
   const models = modelApi.createFromMetadata(connector, modelMetadata3)
   t.equal(Object.keys(models).length, 1)
   const createdModel = models['Airlines']
@@ -62,6 +83,7 @@ test('createFromMetadata - check extra fields are set', t => {
   t.equal(createdModel.name, 'appc.test/Airlines')
   t.ok(createdModel.plural)
   t.ok(createdModel.singular)
+  connector.config.modelNamespace = ''
   t.end()
 })
 
