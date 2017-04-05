@@ -1,6 +1,6 @@
 {
   "name": "appc-connector-utils",
-  "version": "0.1.2",
+  "version": "0.2.2",
   "description": "Utilities for Arrow Connectors",
   "main": "./lib/index.js",
   "scripts": {
