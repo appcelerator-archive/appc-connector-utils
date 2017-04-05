@@ -47,7 +47,18 @@ test('createFromMetadata', t => {
   t.end()
 })
 
+test('generate custom number of models', t => {
+  connector.config.generateModels = ['People', 'Call']
+  const models = modelApi.createFromMetadata(connector, modelMetadata2)
+  t.equal(Object.keys(models).length, 2)
+  t.ok(models['People'])
+  t.ok(models['Call'])
+  connector.config.generateModels = null
+  t.end()
+})
+
 test('createFromMetadata - check extra fields are set', t => {
+  connector.config.skipModelNamespace = true
   const models = modelApi.createFromMetadata(connector, modelMetadata3)
   t.equal(Object.keys(models).length, 1)
   const createdModel = models['Airlines']
@@ -59,9 +70,30 @@ test('createFromMetadata - check extra fields are set', t => {
   t.ok(createdModel.fields.Name)
   t.ok(createdModel.generated)
   t.ok(createdModel.metadata.primarykey)
-  t.equal(createdModel.name, 'appc.test/Airlines')
+  t.equal(createdModel.name, 'Airlines')
   t.ok(createdModel.plural)
   t.ok(createdModel.singular)
+  connector.config.skipModelNamespace = false
+  t.end()
+})
+
+test('model namespace', t => {
+  connector.config.modelNamespace = 'appc.test1'
+  const models = modelApi.createFromMetadata(connector, modelMetadata3)
+  t.equal(Object.keys(models).length, 1)
+  const createdModel = models['Airlines']
+  t.ok(createdModel)
+  t.ok(createdModel.actions)
+  t.ok(createdModel.autogen)
+  t.same(createdModel.connector, connector)
+  t.ok(createdModel.disabledActions)
+  t.ok(createdModel.fields.Name)
+  t.ok(createdModel.generated)
+  t.ok(createdModel.metadata.primarykey)
+  t.equal(createdModel.name, 'appc.test1/Airlines')
+  t.ok(createdModel.plural)
+  t.ok(createdModel.singular)
+  connector.config.modelNamespace = ''
   t.end()
 })
 
@@ -108,4 +140,3 @@ test('getRootModelName', t => {
 
   t.end()
 })
-
