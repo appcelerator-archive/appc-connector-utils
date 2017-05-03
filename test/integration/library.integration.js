@@ -18,7 +18,7 @@ test('server, connector, and library', t => {
 
 test('createModels', t => {
   t.notOk(connector.models)
-  const models = library.createModels(modelMetadata2)
+  const models = library.load.models(modelMetadata2)
   t.same(models, connector.models)
   t.equal(Object.keys(models).length, 3)
   t.ok(models['appc.test/People'])
@@ -30,7 +30,7 @@ test('createModels', t => {
 
 test('createModels delayed attachment', t => {
   t.notOk(connector.models)
-  const models = library.createModels(modelMetadata2, {delayModelsAttachment: true})
+  const models = library.load.models(modelMetadata2, {delayModelsAttachment: true})
   t.notOk(connector.models)
   t.equal(Object.keys(models).length, 3)
   t.ok(models['appc.test/People'])
@@ -40,29 +40,29 @@ test('createModels delayed attachment', t => {
 })
 
 test('createModels - missing metadata', t => {
-  t.throws(library.createModels)
+  t.throws(library.load.models)
   t.end()
 })
 
 test('getConnector', t => {
-  t.same(connector, library.getConnector())
+  t.same(connector, library.context.connector)
   t.end()
 })
 
 test('getConnectorConfig', t => {
-  t.ok(library.getConnectorConfig())
+  t.ok(library.context.config)
   t.end()
 })
 
 test('validateModelMetadata - ok', t => {
   const metadata = modelMetadata1['GoodMetadata']
-  const result = library.validateModelMetadata(metadata)
+  const result = library.validate.modelMetadata(metadata)
   t.same(result.value, metadata)
   t.end()
 })
 
 test('validateModelMetadata - missing metadata', t => {
-  const result = library.validateModelMetadata()
+  const result = library.validate.modelMetadata()
   t.notOk(result)
   t.end()
 })
@@ -108,11 +108,11 @@ test('getRootModelName', t => {
 
 test('createInstanceFromModel', t => {
   // Simulate model creation and get it
-  library.createModels(modelMetadata2)
+  library.load.models(modelMetadata2)
   const model = connector.models['appc.test/Call']
 
   // Use it to create instance from this Model
-  var result = library.createInstanceFromModel(model, callsMetadata[0], 'sid')
+  var result = library.create.modelInstance(model, callsMetadata[0], 'sid')
   t.ok(result)
   t.equal(typeof result, 'object')
   t.end()
@@ -120,11 +120,11 @@ test('createInstanceFromModel', t => {
 
 test('createCollectionFromModel', t => {
   // Simulate model creation and get it
-  library.createModels(modelMetadata2)
+  library.load.models(modelMetadata2)
   const model = connector.models['appc.test/Call']
 
   // Use it to create collection from this Model
-  const result = library.createCollectionFromModel(model, callsMetadata, 'sid')
+  const result = library.create.arrowCollection(model, callsMetadata, 'sid')
   t.ok(result)
   t.ok(result instanceof Array)
   t.ok(result.length === 3)
