@@ -3,5 +3,10 @@ module.exports = {
   modelAutogen: true,
   skipModelNamespace: false,
   modelNamespace: '',
-  logLevel: 'error'
+  logLevel: 'error',
+  generateModels: [
+    'Airlines',
+    'Call',
+    'People'
+  ]
 }

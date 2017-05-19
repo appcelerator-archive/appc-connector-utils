@@ -30,7 +30,21 @@ test('createModels', t => {
 
 test('createModels delayed attachment', t => {
   t.notOk(connector.models)
-  const models = library.load.models(modelMetadata2, {delayModelsAttachment: true})
+  const models = library.load.models(modelMetadata2, { delayModelsAttachment: true })
+  t.notOk(connector.models)
+  t.equal(Object.keys(models).length, 3)
+  t.ok(models['appc.test/People'])
+  t.ok(models['appc.test/Airlines'])
+  t.ok(models['appc.test/Call'])
+  t.end()
+})
+
+test('createModels persist models', t => {
+  t.notOk(connector.models)
+  connector.config.persistModels = true
+  const models = library.load.models(modelMetadata2, { delayModelsAttachment: true })
+  connector.config.persistModels = false
+  container.models = {}
   t.notOk(connector.models)
   t.equal(Object.keys(models).length, 3)
   t.ok(models['appc.test/People'])
@@ -74,11 +88,11 @@ test('getRootModelName', t => {
   const name4 = 'appc.test/myModel4'
   const name5 = 'appc.test/myModel5'
 
-  const modelWithNamespace = {name: name1}
-  const modelWithoutNamespace = {name: name2}
-  const modelWithParent = {_parent: {name: name3}}
-  const modelWithParentNamespaced = {_parent: {name: name4}}
-  const modelWithParentNoName = {name: name5, _parent: {}}
+  const modelWithNamespace = { name: name1 }
+  const modelWithoutNamespace = { name: name2 }
+  const modelWithParent = { _parent: { name: name3 } }
+  const modelWithParentNamespaced = { _parent: { name: name4 } }
+  const modelWithParentNoName = { name: name5, _parent: {} }
   const wrongModel = {}
 
   const name1Result = library.getRootModelName(modelWithNamespace)

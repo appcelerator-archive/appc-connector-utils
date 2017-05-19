@@ -1,8 +1,8 @@
 const test = require('tap').test
-const modelMetadata = require('../data/modelMetadata1')
-const metadataSchema = require('../../lib/model/metadataSchema')
+const modelMetadata = require('../../data/modelMetadata1')
+const metadataSchema = require('../../../lib/model/metadataSchema')
 
-const dataValidator = require('../../lib/tools/dataValidator')
+const dataValidator = require('../../../lib/tools/dataValidator')
 
 test('validate - ok', t => {
   const metadata = modelMetadata['GoodMetadata']

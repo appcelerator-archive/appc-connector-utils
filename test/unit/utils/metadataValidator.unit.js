@@ -1,7 +1,7 @@
 const test = require('tap').test
-const modelMetadata = require('../data/modelMetadata1')
+const modelMetadata = require('../../data/modelMetadata1')
 
-const metadataValidator = require('../../lib/utils/metadataValidator')
+const metadataValidator = require('../../../lib/utils/metadataValidator')
 
 test('validateModelMetadata - missing metadata', t => {
   const result = metadataValidator.validateModelMetadata()

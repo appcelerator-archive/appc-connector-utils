@@ -1,6 +1,6 @@
 {
   "name": "appc-connector-utils",
-  "version": "0.4.0",
+  "version": "0.4.1",
   "description": "Utilities for Arrow Connectors",
   "main": "./lib/index.js",
   "scripts": {
@@ -8,8 +8,8 @@
     "check-deps": "retire || true",
     "checks": "npm run check-deps && npm run check-security",
     "test": "npm run lint-fix && npm run test:all",
-    "test:all": "tap test/unit/*.js test/integration/*.js --color --bail --cov",
-    "test:unit": "tap test/unit/*.js --color --bail --cov",
+    "test:all": "tap test/unit/* test/integration/*.js --color --bail --cov",
+    "test:unit": "tap test/unit/* --color --bail --cov",
     "test:integration": "tap test/integration/*.js --color --bail --cov",
     "lint": "standard | snazzy",
     "lint-fix": "standard --fix | snazzy",
@@ -42,7 +42,8 @@
     "retire": "^1.2.12",
     "snazzy": "^6.0.0",
     "standard": "^8.6.0",
-    "tap": "^10.3.0"
+    "tap": "^10.3.0",
+    "sinon": "^2.1.0"
   },
   "standard": {
     "ignore": [

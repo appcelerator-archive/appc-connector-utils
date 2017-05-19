@@ -1,13 +1,13 @@
 const Arrow = require('arrow')
 const test = require('tap').test
-const modelMetadata2 = require('../data/modelMetadata2')
-const modelMetadata3 = require('../data/modelMetadata3')
-const arrowConfig = require('../conf/arrow')
+const modelMetadata2 = require('../../data/modelMetadata2')
+const modelMetadata3 = require('../../data/modelMetadata3')
+const arrowConfig = require('../../conf/arrow')
 const container = new Arrow(arrowConfig, true)
-const connectorFactory = require('../utils/connectorFactory')
+const connectorFactory = require('../../utils/connectorFactory')
 const connector = connectorFactory()
 
-const modelApi = require('../../lib/model/api')(Arrow)
+const modelApi = require('../../../lib/model/api')(Arrow)
 
 test('environment', t => {
   t.ok(container)
@@ -110,6 +110,7 @@ test('getRootModelName', t => {
   const modelWithParentNamespaced = {_parent: {name: name4}}
   const modelWithParentNoName = {name: name5, _parent: {}}
   const wrongModel = {}
+  const modelIsUndefined = undefined
 
   const name1Result = modelApi.getRootModelName(modelWithNamespace)
   t.equal(name1Result.nameOnly, 'myModel1')
@@ -137,6 +138,7 @@ test('getRootModelName', t => {
   t.equal(name5Result.withNamespace, name5)
 
   t.throws(modelApi.getRootModelName.bind(null, wrongModel))
+  t.throws(modelApi.getRootModelName.bind(null, modelIsUndefined))
 
   t.end()
 })
